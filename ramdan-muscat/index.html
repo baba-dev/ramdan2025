@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Aiwa Media Group - Ramadan 2025 Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/png" href="media/favicon.png">
+
+  <!-- Basic Meta Tags -->
+  <meta name="description" content="Aiwa Media Group Ramadan 2025 - Responsive Dashboard. An all-in-one dashboard featuring local time, prayer timings, inspirational Hadith, Ayah of the Day, events, recipes, and more to guide your Ramadan journey.">
+  <meta name="keywords" content="Aiwa Media Group, Ramadan 2025, Dashboard, Namaz Timings, Hadith, Ayah of the Day, Islamic, Ramadan Events, Iftar, Suhoor, Good Person Quest">
+  <meta name="author" content="Aiwa Media Group">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://aiwamediagroup.com/ramadan2025">
+
+  <!-- Open Graph / Facebook Tags -->
+  <meta property="og:title" content="Ramadan 2025 - Responsive Dashboard">
+  <meta property="og:description" content="Explore the Ramadan 2025 Journey with our all-in-one dashboard featuring prayer timings, inspirational Hadith, Quran Ayahs, events, and recipes.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://aiwamediagroup.com/ramadan2025">
+  <meta property="og:image" content="https://aiwamediagroup.com/ramadan2025/media/trackerbggold.webp">
+
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Ramadan 2025 - Responsive Dashboard">
+  <meta name="twitter:description" content="Discover the Ramadan 2025 Journey through Aiwa Media Group interactive dashboard offering local time, prayer timings, inspirational quotes, events, and more.">
+  <meta name="twitter:image" content="https://aiwamediagroup.com/ramadan2025/media/trackerbggold.webp">
+
+
+  <!-- Tailwind (via browser@4). No other Tailwind or CSS links. -->
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+  <!-- Font Awesome (Optional) -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    crossorigin="anonymous"
+  />
+
+  <!-- Anime.js for moon icon animation -->
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+  <style>
+    /* Card design */
+    .card {
+      background: linear-gradient(135deg, #fff8e1, #ffd180);
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    /* Simple scroll box (if needed) */
+    .scroll-box {
+      max-height: 6rem; 
+      overflow-y: auto;
+      border: 1px solid #eee;
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      background-color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Ramadan day slider ticks */
+    .ticks-container {
+      position: relative;
+      width: 100%;
+      height: 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-left:20px;
+      padding-right: 20px;
+    }
+    .tick {
+      position: relative;
+      width: 2px;
+      height: 14px;
+      background: #000000; /* gray-700 */
+      flex-shrink: 0;
+    }
+    .tick-label {
+      position: absolute;
+      top: 16px;
+      left: -1rem;
+      width: 2rem;
+      text-align: center;
+      font-size: 1rem;
+      color: #374151; /* gray-700 */
+      font-weight: 500;
+    }
+
+    /* The animated moon icon */
+    .moon-icon {
+      position: absolute;
+      top: -28px;
+      left: 0;
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      transition: transform 0.3s;
+    }
+
+    /* Progress line behind ticks */
+    .ticks-background-bar {
+      position: absolute;
+      top: 6px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: #9ca3af; /* gray-400 */
+      border-radius: 2px;
+      z-index: -1;
+    }
+
+/* Example CSS for a transparent, center-aligned namaz table */
+.transparent-namaz-table {
+  width: 100%;            /* same as w-full */
+  border-collapse: collapse;
+  background-color: transparent;
+  text-align: center;     /* same as text-center */
+  font-size: 0.875rem;    /* ~14px, matches "text-sm" from Tailwind */
+  border-style: dashed;
+  border-width: thin;
+}
+
+/* Optional: handle table head row with a bottom border */
+.transparent-namaz-table thead tr {
+  border-bottom: 1px solid #ccc;
+  border-style: dashed;
+  border-width: thin;
+}
+
+/* Cells and headers with some padding */
+.transparent-namaz-table th,
+.transparent-namaz-table td {
+  padding: 0.5rem;        /* matches p-2 in Tailwind */
+}
+
+/* Slight spacing before Font Awesome icons’ text */
+.transparent-namaz-table th i,
+.transparent-namaz-table td i {
+  margin-right: 4px;
+}
+
+@media (max-width: 720px) {
+  /* Hide every label */
+  .tick-label {
+    display: none;
+  }
+
+  /* Except show the label on the .tick-current-day */
+  .tick-current-day .tick-label {
+    display: block;
+  }
+}
+
+/* Global Font Update */
+body, h1, h2, h3, p, span {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Animated Gradient Background */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  background: linear-gradient(270deg, #FBAB7E, #F7CE68, #FBAB7E);
+  background-size: 600% 600%;
+  animation: gradientShift 30s ease infinite;
+  opacity: 0.2;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Fade-in effect for dynamic content */
+.fade-in {
+  opacity: 0;
+  animation: fadeInAnimation 1s forwards;
+}
+@keyframes fadeInAnimation {
+  to { opacity: 1; }
+}
+
+/* Slide-in effect for dynamic content */
+.slide-in {
+  transform: translateY(20px);
+  opacity: 0;
+  animation: slideInAnimation 0.8s forwards;
+}
+@keyframes slideInAnimation {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Oscillation for the moon icon (for religious/cultural motif) */
+@keyframes oscillate {
+  0% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+  100% { transform: rotate(-3deg); }
+}
+.moon-icon.oscillate {
+  animation: oscillate 3s ease-in-out infinite;
+}
+
+/* Counter fade-in (for stats/timers) */
+.count-up {
+  opacity: 0;
+  animation: countUpFade 1s forwards;
+}
+@keyframes countUpFade {
+  to { opacity: 1; }
+}
+
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-700">
+
+  <!-- HEADER & SLIDER SECTION -->
+  <section class="w-full py-8 px-5"
+           style="background-image: linear-gradient(62deg, #FBAB7E 0%, #F7CE68 100%); padding-bottom: 60px">
+    <header class="w-full py-6 text-black text-center px-5">
+      <h1 class="text-3xl font-bold">Ramadan 2025 - Muscat, Oman</h1>
+      <p class="text-sm mt-1">Aiwa Media Group wishes you Ramdan Kareem!</p>
+    </header>
+    <div class="relative w-full mt-4">
+      <div class="ticks-background-bar"></div>
+      <div id="ticksContainer" class="ticks-container"></div>
+      <img
+        id="moonIcon"
+        src="media/islammoon.webp"
+        alt="Moon Icon"
+        class="moon-icon oscillate"
+        style="display: none;"
+      />
+    </div>
+  </section>
+
+  <!-- ========== MAIN CONTENT (FIRST 3 CARDS) ========== -->
+  <main class="w-full px-3 md:px-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
+      <!-- CARD #1: TODAY'S STAT (Day Name) -->
+      <div class="card flex flex-col">
+        <h2 class="text-xl font-bold mb-3 flex items-center">
+          <i class="fa-solid fa-calendar text-indigo-600 mr-2 text-2xl"></i>
+          Today’s Stat (<span id="todayDayName"></span>)
+        </h2>
+        <!-- 1) Local date/time -->
+        <div class="mb-2">
+          <span class="font-semibold">Local Date/Time:</span>
+          <span id="localDateTime" class="ml-1 fade-in">...</span>
+        </div>
+        <!-- 2) Roza duration (today) -->
+        <div class="mb-2">
+          <span class="font-semibold">Roza Duration:</span>
+          <span id="todayRozaDuration" class="ml-1 count-up">—</span>
+        </div>
+        <!-- 3) Table for today's namaz timings -->
+<!-- Inside Card #1, replace your old "Today's Namaz Timings" table block with: -->
+<div class="mb-2 mt-3">
+  <span class="font-semibold block mb-2 text-center">
+    Today's Namaz Timings
+  </span>
+
+  <table class="transparent-namaz-table" style="background-color: transparent;">
+    <thead>
+      <tr class="border-b">
+        <th class="p-2">
+          <i class="fa fa-moon-o"></i> Fajr
+        </th>
+        <th class="p-2">
+          <i class="fa fa-sun-o"></i> Sunrise
+        </th>
+        <th class="p-2">
+          <i class="fa fa-sun-o"></i> Dhuhr
+        </th>
+        <th class="p-2">
+          <i class="fa fa-sun-o"></i> Asr
+        </th>
+        <th class="p-2">
+          <i class="fa fa-sun-o"></i> Maghrib
+        </th>
+        <th class="p-2">
+          <i class="fa fa-moon-o"></i> Ishaa
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td id="todaysFajr" class="p-2">--</td>
+        <td id="todaysSunrise" class="p-2">--</td>
+        <td id="todaysDhuhr" class="p-2">--</td>
+        <td id="todaysAsr" class="p-2">--</td>
+        <td id="todaysMaghrib" class="p-2">--</td>
+        <td id="todaysIshaa" class="p-2">--</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+      </div>
+
+      <!-- CARD #2: TOMORROW'S STAT (Day Name) -->
+      <div class="card flex flex-col">
+        <h2 class="text-xl font-bold mb-3 flex items-center">
+          <i class="fa-solid fa-calendar-check text-blue-600 mr-2 text-2xl"></i>
+          Tomorrow’s Stat (<span id="tomorrowDayName"></span>)
+        </h2>
+        <!-- 1) Sehri ends (tomorrow's Fajr - 5 min) -->
+        <div class="mb-2">
+          <span class="font-semibold">Sehri Ends (5 Mins to Fajr):</span>
+          <span id="tomorrowSehriEnds" class="ml-1 fade-in">—</span>
+        </div>
+        <!-- 2) Roza Duration (tomorrow) -->
+        <div class="mb-2">
+          <span class="font-semibold">Tomorrow Roza Duration:</span>
+          <span id="tomorrowRozaDuration" class="ml-1 count-up">—</span>
+        </div>
+        <!-- 3) Table for tomorrow's namaz timings -->
+        <div class="mb-2 mt-3">
+          <span class="font-semibold block mb-2 text-center">
+            Tomorrow's Namaz Timings
+          </span>
+        
+          <table class="transparent-namaz-table" style="background-color: transparent;">
+            <thead>
+              <tr class="border-b">
+                <th class="p-2">
+                  <i class="fa fa-moon-o"></i> Fajr
+                </th>
+                <th class="p-2">
+                  <i class="fa fa-sun-o"></i> Sunrise
+                </th>
+                <th class="p-2">
+                  <i class="fa fa-sun-o"></i> Dhuhr
+                </th>
+                <th class="p-2">
+                  <i class="fa fa-sun-o"></i> Asr
+                </th>
+                <th class="p-2">
+                  <i class="fa fa-sun-o"></i> Maghrib
+                </th>
+                <th class="p-2">
+                  <i class="fa fa-moon-o"></i> Ishaa
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td id="tomorrowsFajr" class="p-2">--</td>
+                <td id="tomorrowsSunrise" class="p-2">--</td>
+                <td id="tomorrowsDhuhr" class="p-2">--</td>
+                <td id="tomorrowsAsr" class="p-2">--</td>
+                <td id="tomorrowsMaghrib" class="p-2">--</td>
+                <td id="tomorrowsIshaa" class="p-2">--</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CARD #3: AYAH OF THE DAY (unchanged, just moved) -->
+      <div class="card flex flex-col" id="ayahSectionCard">
+        <h2 class="text-xl font-bold mb-3 flex items-center">
+          <i class="fa-solid fa-book-quran text-green-600 mr-2 text-2xl"></i>
+          Ayah of the Day
+        </h2>
+        <h3 class="text-lg font-bold mb-2 text-center">
+          بِسْمِ ٱللّٰهِِ الرَّحْمٰنِ الرَّحِيْمِ
+        </h3>
+        <div id="arabicVerseText" class="text-lg font-bold mb-2 text-center">
+          <!-- Arabic ayah text -->
+        </div>
+        <div id="verseText" class="text-lg mb-2 text-center">
+          <!-- English ayah text -->
+        </div>
+        <div id="surahAndAyah" class="text-lg mb-2">
+          <!-- Surah name + ayah number -->
+        </div>
+        <div class="flex justify-between mt-auto">
+          <button
+            id="shuffle"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
+          >
+            أية جديدة (New Ayah)
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========== SECOND ROW (3 CARDS) ========== -->
+  <section class="w-full mb-8 px-3 md:px-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- CARD #4: HADITH OF THE DAY (unchanged, just moved to first column) -->
+      <div class="card flex flex-col" id="hadithCard">
+        <h2 class="text-xl font-bold mb-3 flex items-center">
+          <i class="fa-solid fa-calendar-days text-green-600 mr-2 text-2xl"></i>
+          Hadith of the Day
+        </h2>
+        <div class="mb-2">
+          <i class="fa-solid fa-quote-left text-blue-500 mr-1"></i>
+          <span class="font-semibold">Reference:</span>
+          <span id="hadithReference" class="ml-1 fade-in">—</span>
+        </div>
+        <div class="mb-2">
+          <i class="fa-solid fa-user text-indigo-500 mr-1"></i>
+          <span class="font-semibold">Narrator:</span>
+          <span id="hadithNarrator" class="ml-1 fade-in">—</span>
+        </div>
+        <div class="mb-4">
+          <i class="fa-solid fa-globe text-blue-500 mr-1"></i>
+          <span class="font-semibold">English Text:</span>
+          <div id="hadithEnglish" class="fade-in text-lg mb-3 text-center"></div>
+        </div>
+        <div class="flex gap-3 mb-4">
+          <div class="relative group">
+            <button class="bg-green-500 text-white px-3 py-1 rounded font-semibold hover:bg-green-600">
+              Urdu <i class="fa-solid fa-language ml-1 fade-in"></i>
+            </button>
+            <div
+              class="absolute hidden group-hover:block bg-white text-black p-3 rounded shadow-lg z-10 w-64 mt-1"
+              style="left: 0;"
+              id="hadithUrduTooltip"
+            >
+              Loading Urdu...
+            </div>
+          </div>
+          <div class="relative group">
+            <button class="bg-yellow-500 text-white px-3 py-1 rounded font-semibold hover:bg-yellow-600">
+              Arabic <i class="fa-solid fa-mosque ml-1 fade-in"></i>
+            </button>
+            <div
+              class="absolute hidden group-hover:block bg-white text-black p-3 rounded shadow-lg z-10 w-64 mt-1"
+              style="left: 0;"
+              id="hadithArabicTooltip"
+            >
+              Loading Arabic...
+            </div>
+          </div>
+        </div>
+        <div class="text-sm text-gray-700 mt-auto">
+          <strong>Status:</strong> <span id="hadithStatus">—</span><br/>
+          <strong>Book:</strong> <span id="hadithBookName">—</span> by 
+          <span id="hadithWriterName">—</span>
+        </div>
+      </div>
+
+      <!-- CARD #5: RAMADAN 2025 EVENTS (unchanged, just placed second) -->
+      <div class="card flex flex-col" id="eventSectionCard">
+        <h2 class="text-xl font-bold mb-3 flex items-center">
+          <i class="fa-solid fa-calendar-days text-green-600 mr-2 text-2xl"></i>
+          Ramadan 2025 Events
+        </h2>
+        <h3 class="text-lg font-bold mb-3" id="eventName">Event Title Here</h3>
+        <div class="mb-2">
+          <i class="fa-solid fa-clock text-blue-500 mr-1"></i>
+          <span class="font-semibold">Date(s):</span>
+          <span id="eventDate" class="ml-1 fade-in">—</span>
+        </div>
+        <div class="mb-2">
+          <i class="fa-solid fa-location-dot text-red-500 mr-1"></i>
+          <span class="font-semibold">Venue:</span>
+          <span id="eventVenue" class="ml-1 fade-in">—</span>
+        </div>
+        <div class="mb-4">
+          <i class="fa-solid fa-info-circle text-indigo-500 mr-1"></i>
+          <span class="font-semibold">Description:</span>
+          <div id="eventDescription" class="fade-in ml-1 fade-in fade-in"></div>
+        </div>
+        <div class="mt-auto flex justify-between">
+          <button
+            id="prevEventBtn"
+            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+          >
+            <i class="fa-solid fa-chevron-left mr-1"></i>
+            Previous
+          </button>
+          <button
+            id="nextEventBtn"
+            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+          >
+            Next
+            <i class="fa-solid fa-chevron-right ml-1 fade-in"></i>
+          </button>
+        </div>
+      </div>
+
+<!-- CARD #6: ADDITIONAL HIGHLIGHTS -->
+<div class="card flex flex-col">
+  <h2 class="text-xl font-bold mb-3 flex items-center">
+    <i class="fa-solid fa-star-and-crescent text-yellow-500 mr-2 text-2xl"></i>
+    Additional Highlights
+  </h2>
+
+  <!-- 1) Good Person Quest -->
+  <div class="mb-2">
+    <span class="font-semibold">Good Person Quest:</span>
+    <span id="goodPersonQuest" class="ml-1 fade-in fade-in">—</span>
+  </div>
+
+  <!-- 2) Know Your Ramadan -->
+  <div class="mb-2">
+    <span class="font-semibold">Know Your Ramadan:</span>
+    <span id="knowRamadanItem" class="ml-1 fade-in fade-in">—</span>
+  </div>
+
+  <!-- 3) Dish of the Day (unchanged) -->
+  <div class="mb-4">
+    <span class="font-semibold">Dish of the Day:</span>
+    <span id="recipeName" class="ml-1 fade-in fade-in">—</span>
+  </div>
+  <h3 class="text-sm font-semibold text-gray-700 mb-1">Recipe Info</h3>
+  <div id="recipeInfo" class="font-semibold scroll-box text-sm text-gray-800 flex-1">—</div>
+</div>
+
+
+
+<!-- <section class="w-full mb-8 px-3 md:px-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+<!-- NEW CARD: Qibla Compass & Mosque Locator -->
+
+
+<!-- NEW CARD: Charity & Donation Tracker -->
+<div class="card flex flex-col min-h-[350px]" id="charityCard">
+  <h2 class="text-xl font-bold mb-3 flex items-center">
+    <i class="fa-solid fa-hand-holding-heart text-pink-600 mr-2 text-2xl"></i>
+    Charity & Donation Tracker
+  </h2>
+  <!-- Charity Suggestions Module -->
+  <!-- Donation Input -->
+  <div class="mb-4">
+    <label for="donationAmount" class="block text-sm font-semibold text-gray-700 mb-1">Enter Donation Amount ($):</label>
+    <input id="donationAmount" type="number" class="w-full p-2 border rounded" placeholder="e.g., 50">
+    <button id="addDonationBtn" class="mt-2 bg-pink-500 hover:bg-pink-600 text-white px-3 py-1 rounded">
+      Add Donation
+    </button>
+  </div>
+  <!-- Reminder Input -->
+  <div class="mb-4">
+    <label for="reminderDate" class="block text-sm font-semibold text-gray-700 mb-1">Set Donation Reminder:</label>
+    <input id="reminderDate" type="datetime-local" class="w-full p-2 border rounded">
+    <button id="setReminderBtn" class="mt-2 bg-pink-500 hover:bg-pink-600 text-white px-3 py-1 rounded">
+      Set Reminder
+    </button>
+  </div>
+  <!-- Tracker Table -->
+  <div class="flex-grow">
+    <table class="transparent-namaz-table w-full" style="background-color: transparent;">
+      <thead>
+        <tr class="border-b">
+          <th class="p-2">Metric</th>
+          <th class="p-2">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="p-2">Total Donations</td>
+          <td id="totalDonations" class="p-2">$0.00</td>
+        </tr>
+        <tr>
+          <td class="p-2">Next Reminder</td>
+          <td id="nextReminder" class="p-2">--</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- NEW CARD: Zakat Calculator -->
+<div class="card flex flex-col min-h-[350px]" id="zakatCard">
+  <h2 class="text-xl font-bold mb-3 flex items-center">
+    <i class="fa-solid fa-calculator text-green-600 mr-2 text-2xl"></i>
+    Zakat Calculator
+  </h2>
+  <!-- Input Fields -->
+  <div class="mb-4">
+    <label for="income" class="block text-sm font-semibold text-gray-700 mb-1">Monthly Income ($):</label>
+    <input id="income" type="number" class="w-full p-2 border rounded" placeholder="e.g., 3000">
+  </div>
+  <div class="mb-4">
+    <label for="savings" class="block text-sm font-semibold text-gray-700 mb-1">Total Savings ($):</label>
+    <input id="savings" type="number" class="w-full p-2 border rounded" placeholder="e.g., 10000">
+  </div>
+  <div class="mb-4">
+    <label for="expenses" class="block text-sm font-semibold text-gray-700 mb-1">Monthly Expenses ($):</label>
+    <input id="expenses" type="number" class="w-full p-2 border rounded" placeholder="e.g., 2000">
+  </div>
+  <button id="calculateZakat" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded mb-4">
+    Calculate Zakat
+  </button>
+  <!-- Result Display -->
+  <div class="mt-auto text-center">
+    <p class="font-semibold text-gray-700">Your Zakat Obligation:</p>
+    <p id="zakatResult" class="text-lg font-bold text-gray-800">--</p>
+  </div>
+</div>
+
+<div class="card flex flex-col min-h-[350px]" id="qiblaCard">
+  <h2 class="text-xl font-bold mb-3 flex items-center">
+    <i class="fa-solid fa-compass text-purple-600 mr-2 text-2xl"></i>
+    Qibla Compass & Mosque Locator
+  </h2>
+  <!-- Compass Display -->
+  <div class="mb-4 text-center">
+    <img id="qiblaCompass" src="media/compass.png" alt="Qibla Compass" class="w-24 h-24 mx-auto">
+  </div>
+  <!-- Tabular Information -->
+  <div class="flex-grow">
+    <table class="transparent-namaz-table" style="background-color: transparent;">
+      <thead>
+        <tr class="border-b">
+          <th class="p-2">Info</th>
+          <th class="p-2">Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="p-2">Qibla Direction</td>
+          <td id="qiblaDirection" class="p-2">--</td>
+        </tr>
+        <tr>
+          <td class="p-2">Nearest Mosque</td>
+          <td id="nearestMosque" class="p-2">Searching</td>
+        </tr>
+        <tr>
+          <td class="p-2">Distance</td>
+          <td id="mosqueDistance" class="p-2">Sorry, Google Maps API is not Responding</td>
+        </tr>
+      </tbody>
+    </table>
+      <!-- New Weather Section -->
+  <div id="weatherSection" class="mt-4 text-center">
+    <p class="text-sm justify-left font-semibold text-gray-700 ">Live Weather</p>
+    <div id="weatherData" class="flex justify-left items-center space-x-2">
+      <img id="weatherIcon" src="" alt="Weather Icon" class="w-12 h-12">
+      <div>
+        <p id="weatherTemp" class="text-lg font-bold">--°C</p>
+        <p id="weatherDesc" class="text-sm text-gray-600">--</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</section> -->
+
+  <!-- ========== Footer ========== -->
+
+<footer class="bg-gray-800 text-gray-200 py-4">
+  <div class="container mx-auto text-center">
+    <a href="https://aiwamediagroup.com/" class="text-lg font-bold hover:text-white transition duration-300">
+      Aiwa Media Group
+    </a>
+    <p class="mt-1 text-sm">A Complete I.T Solutions &amp; Digital Marketing Agency</p>
+    <p class="mt-2 text-xs">&copy; 2025 Aiwa Media Group. All rights reserved.</p>
+  </div>
+</footer>
+
+  <!-- ========== SCRIPTS ========== -->
+
+  <!-- ========= RAMADAN EVENTS SCRIPT ========= -->
+  <script>
+
+const goodPersonQuests = [
+  "Donate a portion of your meal daily to someone who has less.",
+  "Offer to help an elderly neighbor with groceries or chores.",
+  "Smile and greet everyone kindly, making each encounter positive.",
+  "Call a family member you haven’t spoken to in a while to check on them.",
+  "Give sincere compliments and encouragement to those around you.",
+  "Pick up litter in your neighborhood for a cleaner environment.",
+  "Volunteer at a local charity or soup kitchen once a week.",
+  "Prepare Iftar plates for those who are fasting but can’t cook themselves.",
+  "Pay for someone’s coffee or snack anonymously as a random act of kindness.",
+  "Share Islamic reminders or uplifting quotes on social media.",
+  "Offer your seat to an elderly or pregnant person on public transport.",
+  "Mentor a younger student or sibling in a subject you excel at.",
+  "Collect gently used clothes to donate to a local shelter.",
+  "Help clean the mosque or community center after events.",
+  "Read a children’s book to young kids in your neighborhood.",
+  "Check in on a friend who might be struggling with stress or anxiety.",
+  "Leave a thank-you note for your local sanitation or delivery workers.",
+  "Cook a meal for someone who lives alone.",
+  "Offer free tutoring or language help to new immigrants in your area.",
+  "Organize a mini fundraiser for a cause you’re passionate about.",
+  "Donate books to a local library or youth center.",
+  "Write down three things you’re grateful for each day and share with a friend.",
+  "Assist someone in filling out job applications or building a resume.",
+  "Give away extra groceries or produce to a neighbor in need.",
+  "Volunteer to babysit for free so parents can attend Tarawih prayers.",
+  "Help at an animal shelter (if feasible) by offering your time or resources.",
+  "Leave inspirational notes for people to find in public places.",
+  "Be the first to greet and apologize in any conflict you’re involved in.",
+  "Organize a community iftar focusing on low-income families.",
+  "Donate blood if you’re healthy and able.",
+  "Offer free rides to the elderly or those without transportation for Jum’ah.",
+  "Guide someone new in learning basic Salah or Quran reading.",
+  "Create care packages for orphans or homeless individuals.",
+  "Pay for a stranger’s groceries if they seem to be struggling.",
+  "Offer IT or tech support to older relatives for their phones or computers.",
+  "Plant a tree or small garden to beautify the environment.",
+  "Keep water and snacks in your car to distribute to the needy you see.",
+  "Share your knowledge by hosting a small study circle or book club.",
+  "Volunteer to wash dishes or clean up after communal iftar gatherings.",
+  "Help someone fix or repair a household item instead of discarding it.",
+  "Show patience and kindness even under stressful circumstances.",
+  "Surprise a friend or coworker with a thoughtful ‘thank you’ gift.",
+  "Check if your local food bank needs extra items and donate accordingly.",
+  "Offer to drive a friend or neighbor to important appointments.",
+  "Support a small local business by promoting them online for free.",
+  "Help someone study for an upcoming exam or test.",
+  "Arrange a charity bake sale or snack sale in your community.",
+  "Host a small Quran study session in your home.",
+  "Spend quality time listening to someone who needs to talk.",
+  "Renew your own intentions daily and pray for others’ well-being.",
+];
+
+const knowYourRamadan = [
+  {
+    No: 1,
+    Topic: "Fasting (Sawm)",
+    "Fascinating Fact": "Fasting in Ramadan is commanded to develop taqwa (God-consciousness).",
+    "Quranic Reference/Source": "Quran 2:183"
+  },
+  {
+    No: 2,
+    Topic: "Revelation of the Quran",
+    "Fascinating Fact": "Ramadan marks the month in which the Quran was revealed as guidance for humanity.",
+    "Quranic Reference/Source": "Quran 2:185"
+  },
+  {
+    No: 3,
+    Topic: "Self-Discipline",
+    "Fascinating Fact": "Fasting instills self-control and discipline in everyday life.",
+    "Quranic Reference/Source": "Quran 2:183"
+  },
+  {
+    No: 4,
+    Topic: "Charity (Zakat)",
+    "Fascinating Fact": "Zakat ensures wealth distribution and supports the needy.",
+    "Quranic Reference/Source": "Quran 2:177"
+  },
+  {
+    No: 5,
+    Topic: "Community Bonding",
+    "Fascinating Fact": "Iftar meals bring families and communities together every evening.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 6,
+    Topic: "Reflection & Repentance",
+    "Fascinating Fact": "Ramadan is a period for introspection and seeking Allah's forgiveness.",
+    "Quranic Reference/Source": "Quran 2:185"
+  },
+  {
+    No: 7,
+    Topic: "Laylat al-Qadr",
+    "Fascinating Fact": "The Night of Power is better than a thousand months of worship.",
+    "Quranic Reference/Source": "Quran 97:3"
+  },
+  {
+    No: 8,
+    Topic: "Gratitude",
+    "Fascinating Fact": "Fasting makes believers appreciate everyday blessings like food and water.",
+    "Quranic Reference/Source": "Quranic Commentary"
+  },
+  {
+    No: 9,
+    Topic: "Global Unity",
+    "Fascinating Fact": "Muslims worldwide fast simultaneously, fostering unity across cultures.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 10,
+    Topic: "Spiritual Renewal",
+    "Fascinating Fact": "Ramadan offers a chance to rejuvenate one's faith and deepen spiritual connection.",
+    "Quranic Reference/Source": "Quranic Exegesis"
+  },
+  {
+    No: 11,
+    Topic: "Humility",
+    "Fascinating Fact": "Fasting cultivates humility and submission before Allah.",
+    "Quranic Reference/Source": "Quran 2:183"
+  },
+  {
+    No: 12,
+    Topic: "Patience",
+    "Fascinating Fact": "Enduring hunger and thirst teaches patience in times of hardship.",
+    "Quranic Reference/Source": "Quranic Interpretation"
+  },
+  {
+    No: 13,
+    Topic: "Self-Control",
+    "Fascinating Fact": "Abstaining from physical needs helps control worldly desires.",
+    "Quranic Reference/Source": "Quran 2:183"
+  },
+  {
+    No: 14,
+    Topic: "Compassion",
+    "Fascinating Fact": "Experiencing hunger develops empathy for those in need.",
+    "Quranic Reference/Source": "Quranic Commentary"
+  },
+  {
+    No: 15,
+    Topic: "Forgiveness",
+    "Fascinating Fact": "Ramadan encourages forgiving others and oneself.",
+    "Quranic Reference/Source": "Quran 39:53"
+  },
+  {
+    No: 16,
+    Topic: "Extra Prayers (Tarawih)",
+    "Fascinating Fact": "Special nightly prayers (Tarawih) are offered, enhancing spiritual upliftment.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 17,
+    Topic: "Quran Recitation",
+    "Fascinating Fact": "Many strive to complete reading the entire Quran during Ramadan.",
+    "Quranic Reference/Source": "Quranic Exegesis"
+  },
+  {
+    No: 18,
+    Topic: "Family Values",
+    "Fascinating Fact": "Shared Suhoor and Iftar meals reinforce family bonds and traditions.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 19,
+    Topic: "Community Service",
+    "Fascinating Fact": "Increased acts of charity and volunteerism are central during Ramadan.",
+    "Quranic Reference/Source": "Quran 2:177"
+  },
+  {
+    No: 20,
+    Topic: "Mindfulness",
+    "Fascinating Fact": "Ramadan promotes mindfulness in thoughts, words, and actions.",
+    "Quranic Reference/Source": "Quranic Interpretation"
+  },
+  {
+    No: 21,
+    Topic: "Purification",
+    "Fascinating Fact": "Fasting purifies both the body and soul from worldly impurities.",
+    "Quranic Reference/Source": "Quran 2:183"
+  },
+  {
+    No: 22,
+    Topic: "Renewal of Faith",
+    "Fascinating Fact": "Ramadan is a time to renew one's commitment to Islam.",
+    "Quranic Reference/Source": "Quran 2:185"
+  },
+  {
+    No: 23,
+    Topic: "Discipline in Speech",
+    "Fascinating Fact": "Believers are urged to avoid gossip and harmful speech while fasting.",
+    "Quranic Reference/Source": "Quran 49:11"
+  },
+  {
+    No: 24,
+    Topic: "Avoiding Sin",
+    "Fascinating Fact": "Ramadan is a period to abstain from sinful actions and thoughts.",
+    "Quranic Reference/Source": "Quran 2:187"
+  },
+  {
+    No: 25,
+    Topic: "Self-Reflection",
+    "Fascinating Fact": "Each day of fasting offers a moment for deep personal reflection.",
+    "Quranic Reference/Source": "Islamic Teachings"
+  },
+  {
+    No: 26,
+    Topic: "Increased Worship",
+    "Fascinating Fact": "The month is marked by additional prayers and Quran study.",
+    "Quranic Reference/Source": "Quran 97:3"
+  },
+  {
+    No: 27,
+    Topic: "Divine Forgiveness",
+    "Fascinating Fact": "Sincere repentance during Ramadan leads to Allah's forgiveness.",
+    "Quranic Reference/Source": "Quran 39:53"
+  },
+  {
+    No: 28,
+    Topic: "Spiritual Discipline",
+    "Fascinating Fact": "The rigorous discipline of fasting strengthens spiritual resolve.",
+    "Quranic Reference/Source": "Quranic Commentary"
+  },
+  {
+    No: 29,
+    Topic: "Empathy",
+    "Fascinating Fact": "Fasting helps believers understand the plight of the less fortunate.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 30,
+    Topic: "Charity as Purification",
+    "Fascinating Fact": "Acts of giving during Ramadan purify one's wealth and soul.",
+    "Quranic Reference/Source": "Quran 2:177"
+  },
+  {
+    No: 31,
+    Topic: "Value of Time",
+    "Fascinating Fact": "Ramadan teaches the importance of using time wisely for worship.",
+    "Quranic Reference/Source": "Quranic Exegesis"
+  },
+  {
+    No: 32,
+    Topic: "Focus on the Hereafter",
+    "Fascinating Fact": "The month shifts focus from worldly life to eternal life.",
+    "Quranic Reference/Source": "Quran 57:20"
+  },
+  {
+    No: 33,
+    Topic: "Renewal of Intention",
+    "Fascinating Fact": "Ramadan offers an annual chance to reset one's intentions and spiritual goals.",
+    "Quranic Reference/Source": "Islamic Teachings"
+  },
+  {
+    No: 34,
+    Topic: "Breaking Fast Tradition",
+    "Fascinating Fact": "The fast is traditionally broken with dates and water, following the Prophet's example.",
+    "Quranic Reference/Source": "Hadith (Sahih Bukhari)"
+  },
+  {
+    No: 35,
+    Topic: "Nightly Congregation",
+    "Fascinating Fact": "Tarawih prayers create a strong atmosphere of communal worship.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 36,
+    Topic: "Social Equality",
+    "Fascinating Fact": "All Muslims, regardless of status, share the same obligation to fast.",
+    "Quranic Reference/Source": "Quran 2:183"
+  },
+  {
+    No: 37,
+    Topic: "Reminder for the Wealthy",
+    "Fascinating Fact": "Fasting reminds the affluent of the struggles of the poor.",
+    "Quranic Reference/Source": "Quran 2:177"
+  },
+  {
+    No: 38,
+    Topic: "Reinforcing Community Spirit",
+    "Fascinating Fact": "Daily communal iftars strengthen social ties among Muslims.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 39,
+    Topic: "Health Benefits",
+    "Fascinating Fact": "Proper fasting is believed to have beneficial effects on physical health.",
+    "Quranic Reference/Source": "Various Islamic Scholars"
+  },
+  {
+    No: 40,
+    Topic: "Multiplication of Rewards",
+    "Fascinating Fact": "The rewards for good deeds in Ramadan are multiplied manifold.",
+    "Quranic Reference/Source": "Quran 97:3"
+  },
+  {
+    No: 41,
+    Topic: "Moderation in Eating",
+    "Fascinating Fact": "Ramadan encourages moderation in food consumption.",
+    "Quranic Reference/Source": "Quranic Interpretation"
+  },
+  {
+    No: 42,
+    Topic: "Time for Repentance",
+    "Fascinating Fact": "The month offers numerous opportunities to seek forgiveness.",
+    "Quranic Reference/Source": "Quran 66:8"
+  },
+  {
+    No: 43,
+    Topic: "Blessings of Suhoor",
+    "Fascinating Fact": "The pre-dawn meal (Suhoor) is considered especially blessed.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 44,
+    Topic: "Unity in Diversity",
+    "Fascinating Fact": "Muslims from diverse cultures unite under the common practice of fasting.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 45,
+    Topic: "Significance of the Crescent",
+    "Fascinating Fact": "The sighting of the crescent moon signals both the beginning and the end of Ramadan.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 46,
+    Topic: "Preservation of the Quran",
+    "Fascinating Fact": "Ramadan is a time dedicated to the recitation and memorization of the Quran.",
+    "Quranic Reference/Source": "Quranic Exegesis"
+  },
+  {
+    No: 47,
+    Topic: "Overcoming Temptations",
+    "Fascinating Fact": "Fasting trains believers to overcome both physical and spiritual temptations.",
+    "Quranic Reference/Source": "Quran 2:183"
+  },
+  {
+    No: 48,
+    Topic: "Spiritual Cleansing",
+    "Fascinating Fact": "The fast serves as a means to cleanse the heart and soul.",
+    "Quranic Reference/Source": "Quran 2:183"
+  },
+  {
+    No: 49,
+    Topic: "Learning Patience",
+    "Fascinating Fact": "The challenges of fasting cultivate patience and resilience.",
+    "Quranic Reference/Source": "Quranic Commentary"
+  },
+  {
+    No: 50,
+    Topic: "Joy of Eid",
+    "Fascinating Fact": "Eid al-Fitr, celebrated at the end of Ramadan, marks the joyous conclusion of fasting.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 51,
+    Topic: "Reflection on Mortality",
+    "Fascinating Fact": "Fasting reminds believers of the transient nature of worldly life.",
+    "Quranic Reference/Source": "Quran 57:20"
+  },
+  {
+    No: 52,
+    Topic: "Strengthening Faith",
+    "Fascinating Fact": "The challenges of Ramadan help build a more robust and resilient faith.",
+    "Quranic Reference/Source": "Islamic Teachings"
+  },
+  {
+    No: 53,
+    Topic: "Symbolism of Sacrifice",
+    "Fascinating Fact": "Fasting is symbolic of the sacrifices made in the path of righteousness.",
+    "Quranic Reference/Source": "Quranic Exegesis"
+  },
+  {
+    No: 54,
+    Topic: "Increased Remembrance",
+    "Fascinating Fact": "Muslims are encouraged to frequently remember Allah throughout the day.",
+    "Quranic Reference/Source": "Quran 33:41"
+  },
+  {
+    No: 55,
+    Topic: "Strengthening Community Ties",
+    "Fascinating Fact": "Collective iftars and prayers enhance the sense of community.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 56,
+    Topic: "Discipline in Daily Life",
+    "Fascinating Fact": "The strict schedule of fasting fosters excellent time management skills.",
+    "Quranic Reference/Source": "Islamic Teachings"
+  },
+  {
+    No: 57,
+    Topic: "Voluntary Charity (Sadaqah)",
+    "Fascinating Fact": "Beyond the obligatory Zakat, voluntary charity is especially meritorious during Ramadan.",
+    "Quranic Reference/Source": "Quran 2:274"
+  },
+  {
+    No: 58,
+    Topic: "Inner Beauty Over Appearance",
+    "Fascinating Fact": "Ramadan emphasizes that true beauty is found in piety and character.",
+    "Quranic Reference/Source": "Quran 49:13"
+  },
+  {
+    No: 59,
+    Topic: "Preparation for Judgment",
+    "Fascinating Fact": "The practices of Ramadan prepare believers for the Day of Judgment.",
+    "Quranic Reference/Source": "Quran 2:197"
+  },
+  {
+    No: 60,
+    Topic: "Balance Between Worldly and Spiritual",
+    "Fascinating Fact": "Ramadan teaches how to balance daily life with spiritual devotion.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 61,
+    Topic: "Cultivating Gratitude",
+    "Fascinating Fact": "The experience of fasting nurtures a deep sense of thankfulness.",
+    "Quranic Reference/Source": "Islamic Teachings"
+  },
+  {
+    No: 62,
+    Topic: "A Time for Self-Improvement",
+    "Fascinating Fact": "Ramadan offers a dedicated period for personal growth and spiritual self-improvement.",
+    "Quranic Reference/Source": "Quranic Commentary"
+  },
+  {
+    No: 63,
+    Topic: "Encouragement of Good Deeds",
+    "Fascinating Fact": "Every kind act during Ramadan is believed to yield abundant rewards.",
+    "Quranic Reference/Source": "Quran 2:261"
+  },
+  {
+    No: 64,
+    Topic: "Renewing Personal Resolve",
+    "Fascinating Fact": "The month is a perfect opportunity to break bad habits and adopt a healthier lifestyle.",
+    "Quranic Reference/Source": "Islamic Teachings"
+  },
+  {
+    No: 65,
+    Topic: "Sacred Night Practices",
+    "Fascinating Fact": "The last ten nights are often spent in continuous worship and reflection.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 66,
+    Topic: "Celebration of the Quran",
+    "Fascinating Fact": "Ramadan is a celebration of the divine wisdom contained in the Quran.",
+    "Quranic Reference/Source": "Quran 2:185"
+  },
+  {
+    No: 67,
+    Topic: "Fasting Beyond Physical Needs",
+    "Fascinating Fact": "Fasting is a means to purify the heart and not merely abstaining from food.",
+    "Quranic Reference/Source": "Quran 2:183"
+  },
+  {
+    No: 68,
+    Topic: "Fostering Mindfulness",
+    "Fascinating Fact": "Abstaining from worldly pleasures fosters a constant state of mindfulness.",
+    "Quranic Reference/Source": "Quranic Commentary"
+  },
+  {
+    No: 69,
+    Topic: "Spiritual Focus Over Materialism",
+    "Fascinating Fact": "Ramadan shifts focus from materialistic pursuits to spiritual enrichment.",
+    "Quranic Reference/Source": "Islamic Teachings"
+  },
+  {
+    No: 70,
+    Topic: "Emphasis on Sincerity",
+    "Fascinating Fact": "The sincerity of one's intention (niyyah) is vital for the validity of fasting.",
+    "Quranic Reference/Source": "Hadith (Sahih Bukhari)"
+  },
+  {
+    No: 71,
+    Topic: "Breaking Complacency",
+    "Fascinating Fact": "The challenges of fasting break down complacency and encourage vigilance in faith.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 72,
+    Topic: "Daily Renewal",
+    "Fascinating Fact": "Each day of fasting offers a new beginning for spiritual renewal.",
+    "Quranic Reference/Source": "Quranic Commentary"
+  },
+  {
+    No: 73,
+    Topic: "Strength Through Hardship",
+    "Fascinating Fact": "The physical challenges of fasting build inner strength and fortitude.",
+    "Quranic Reference/Source": "Quran 2:155-157"
+  },
+  {
+    No: 74,
+    Topic: "Body and Soul Connection",
+    "Fascinating Fact": "Fasting highlights the link between physical health and spiritual well-being.",
+    "Quranic Reference/Source": "Islamic Teachings"
+  },
+  {
+    No: 75,
+    Topic: "Reaffirming Faith Daily",
+    "Fascinating Fact": "The routine of fasting and breaking fast reaffirms one's daily commitment to Islam.",
+    "Quranic Reference/Source": "Quran 2:183"
+  },
+  {
+    No: 76,
+    Topic: "Resisting Negative Influences",
+    "Fascinating Fact": "Ramadan encourages believers to avoid harmful influences and focus on righteousness.",
+    "Quranic Reference/Source": "Islamic Teachings"
+  },
+  {
+    No: 77,
+    Topic: "The Virtue of Consistency",
+    "Fascinating Fact": "Consistent acts of worship during Ramadan foster lifelong spiritual habits.",
+    "Quranic Reference/Source": "Quran 2:183"
+  },
+  {
+    No: 78,
+    Topic: "Embracing Moderation",
+    "Fascinating Fact": "The principles of moderation in food and behavior are central to Ramadan.",
+    "Quranic Reference/Source": "Quranic Commentary"
+  },
+  {
+    No: 79,
+    Topic: "Daily Spiritual Lessons",
+    "Fascinating Fact": "Each day in Ramadan is filled with lessons that can transform one's character.",
+    "Quranic Reference/Source": "Islamic Teachings"
+  },
+  {
+    No: 80,
+    Topic: "Importance of Intention",
+    "Fascinating Fact": "The intention (niyyah) behind fasting is key to its spiritual effectiveness.",
+    "Quranic Reference/Source": "Hadith (Sahih Bukhari)"
+  },
+  {
+    No: 81,
+    Topic: "Fasting as Worship",
+    "Fascinating Fact": "Fasting is a direct act of worship and obedience to Allah's command.",
+    "Quranic Reference/Source": "Quran 2:183"
+  },
+  {
+    No: 82,
+    Topic: "Community Iftar Gatherings",
+    "Fascinating Fact": "Sharing iftar with neighbors strengthens community bonds and mutual support.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 83,
+    Topic: "Blessings of Night Prayers",
+    "Fascinating Fact": "Tarawih and other nightly prayers enhance communal spirituality.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 84,
+    Topic: "Renewing Religious Commitment",
+    "Fascinating Fact": "Ramadan renews a believer's commitment to follow Islamic teachings.",
+    "Quranic Reference/Source": "Quran 2:185"
+  },
+  {
+    No: 85,
+    Topic: "The Role of Patience",
+    "Fascinating Fact": "Patience learned during fasting is essential for overcoming life's trials.",
+    "Quranic Reference/Source": "Quran 2:153"
+  },
+  {
+    No: 86,
+    Topic: "Fasting and Self-Respect",
+    "Fascinating Fact": "Successfully observing the fast instills a sense of pride and self-respect.",
+    "Quranic Reference/Source": "Islamic Teachings"
+  },
+  {
+    No: 87,
+    Topic: "Empathy Through Shared Experience",
+    "Fascinating Fact": "The shared challenge of fasting builds a deep empathy among believers.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  },
+  {
+    No: 88,
+    Topic: "Power of Collective Worship",
+    "Fascinating Fact": "Congregational prayers during Ramadan amplify the spirit of communal worship.",
+    "Quranic Reference/Source": "Islamic Teachings"
+  },
+  {
+    No: 89,
+    Topic: "Daily Moments for Reflection",
+    "Fascinating Fact": "Each fast provides moments to reflect on one's life and reform one's behavior.",
+    "Quranic Reference/Source": "Quranic Commentary"
+  },
+  {
+    No: 90,
+    Topic: "Learning from Prophetic Stories",
+    "Fascinating Fact": "The stories of the prophets in the Quran inspire Muslims to lead righteous lives.",
+    "Quranic Reference/Source": "Various Surahs in the Quran"
+  },
+  {
+    No: 91,
+    Topic: "Embracing Simplicity",
+    "Fascinating Fact": "Ramadan teaches a simple lifestyle focused on spirituality rather than materialism.",
+    "Quranic Reference/Source": "Quran 102:1-2"
+  },
+  {
+    No: 92,
+    Topic: "Transformative Spiritual Impact",
+    "Fascinating Fact": "Fasting transforms the body, mind, and spirit, leading to overall better health.",
+    "Quranic Reference/Source": "Quran 2:183"
+  },
+  {
+    No: 93,
+    Topic: "Gratitude for Divine Blessings",
+    "Fascinating Fact": "Observing Ramadan heightens awareness of Allah's countless blessings.",
+    "Quranic Reference/Source": "Quran 14:7"
+  },
+  {
+    No: 94,
+    Topic: "Connection of Fasting and Prayer",
+    "Fascinating Fact": "Fasting enhances the quality and focus of daily prayers.",
+    "Quranic Reference/Source": "Quran 2:187"
+  },
+  {
+    No: 95,
+    Topic: "A Period for Renewed Devotion",
+    "Fascinating Fact": "Ramadan is a time to devote oneself completely to Allah's service.",
+    "Quranic Reference/Source": "Quran 2:185"
+  },
+  {
+    No: 96,
+    Topic: "Cultivating Inner Peace",
+    "Fascinating Fact": "The act of fasting fosters tranquility and inner peace in the believer.",
+    "Quranic Reference/Source": "Quran 13:28"
+  },
+  {
+    No: 97,
+    Topic: "Strengthening Interfaith Bonds",
+    "Fascinating Fact": "Ramadan often opens doors for interfaith dialogue and understanding.",
+    "Quranic Reference/Source": "Modern Islamic Outreach"
+  },
+  {
+    No: 98,
+    Topic: "Reminder of the Hereafter",
+    "Fascinating Fact": "Fasting keeps the believer mindful of the eternal life beyond this world.",
+    "Quranic Reference/Source": "Quran 57:20"
+  },
+  {
+    No: 99,
+    Topic: "Impact on Daily Life",
+    "Fascinating Fact": "The discipline of Ramadan influences all aspects of a believer's daily routine.",
+    "Quranic Reference/Source": "Quran 2:183"
+  },
+  {
+    No: 100,
+    Topic: "Celebration of Eid al-Fitr",
+    "Fascinating Fact": "Eid al-Fitr marks the joyful culmination of Ramadan and the renewal of faith.",
+    "Quranic Reference/Source": "Islamic Tradition"
+  }
+];
+
+
+    const ramadanEvents = [
+      {
+        name: "Memorable Ramadan Gatherings",
+        date: "Daily during Ramadan 2025 (Mar 1–Mar 30)",
+        venue: "The Ritz-Carlton Al Bustan Palace, Muscat",
+        description: "An exquisite Iftar and Suhoor experience with a traditional buffet, live music, and Arabian hospitality."
+      },
+      {
+        name: "Layali Ramadan Iftar",
+        date: "Daily during Ramadan 2025",
+        venue: "The Chedi Muscat, Muscat",
+        description: "A palatial Iftar buffet offering an array of traditional dishes, served with water, juices, and dates, accompanied by live music."
+      },
+      {
+        name: "IDo Events Suhoor Party",
+        date: "Select evenings during Ramadan 2025",
+        venue: "Various trendy venues in Muscat",
+        description: "A series of themed Suhoor parties with cultural entertainment and innovative dining experiences for non-fasting guests and visitors."
+      },
+      {
+        name: "Community Iftar at Sultan Qaboos Grand Mosque",
+        date: "Weekly (e.g., Fridays) during Ramadan 2025",
+        venue: "Sultan Qaboos Grand Mosque, Muscat",
+        description: "Large community iftar gatherings after Maghrib prayer promoting unity and local fellowship."
+      },
+      {
+        name: "Ramadan Cultural Fair",
+        date: "Mid-Ramadan (tentative dates)",
+        venue: "Cultural Center, Muscat",
+        description: "A fair celebrating Omani heritage with traditional crafts, food stalls, and cultural performances."
+      },
+      {
+        name: "Ramadan Night Market",
+        date: "Late Ramadan (tentative dates)",
+        venue: "Downtown Muscat",
+        description: "An evening market featuring local delicacies, handicrafts, and live performances—ideal for Iftar shopping and festive vibes."
+      },
+      {
+        name: "Qiyam & Quran Recitation Sessions",
+        date: "Last 10 nights of Ramadan",
+        venue: "Sultan Qaboos Grand Mosque, Muscat",
+        description: "Extended nightly prayers and Quran recitations, including vigils on Laylat al-Qadr, to maximize spiritual rewards."
+      },
+      {
+        name: "Charity & Zakat Drives",
+        date: "Throughout Ramadan 2025",
+        venue: "Various locations in Muscat",
+        description: "Organized initiatives and food distribution drives by local charities to support those in need during Ramadan."
+      },
+      {
+        name: "Ramadan Concert & Cultural Performances",
+        date: "Select weekend evenings in Ramadan 2025",
+        venue: "Prominent cultural venues, Muscat",
+        description: "Live concerts and cultural shows featuring traditional Omani music and dance, highlighting the festive spirit of Ramadan."
+      },
+      {
+        name: "Suhoor & Iftar Food Festival",
+        date: "One weekend during Ramadan 2025",
+        venue: "Major hotel or event space, Muscat",
+        description: "A culinary festival showcasing diverse Suhoor and Iftar dishes, cooking demonstrations, and local food competitions."
+      }
+    ];
+
+    let currentEventIndex = 0;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      showEvent(currentEventIndex);
+
+      document.getElementById("prevEventBtn").addEventListener("click", () => {
+        currentEventIndex = (currentEventIndex - 1 + ramadanEvents.length) % ramadanEvents.length;
+        showEvent(currentEventIndex);
+      });
+
+      document.getElementById("nextEventBtn").addEventListener("click", () => {
+        currentEventIndex = (currentEventIndex + 1) % ramadanEvents.length;
+        showEvent(currentEventIndex);
+      });
+    });
+
+    function showEvent(index) {
+      const event = ramadanEvents[index];
+      document.getElementById("eventName").innerText = event.name;
+      document.getElementById("eventDate").innerText = event.date;
+      document.getElementById("eventVenue").innerText = event.venue;
+      document.getElementById("eventDescription").innerText = event.description;
+    }
+  </script>
+
+  <!-- ========= HADITH SCRIPT ========= -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const hadithURL = "https://hadithapi.com/api/hadiths?apiKey=$2y$10$8pfdp81lisTxTBe0YtUQAT3CL4POJcM516tGDTdb27lvzuDHEe";
+
+      fetch(hadithURL)
+        .then(response => response.json())
+        .then(data => {
+          const hadithArray = data?.hadiths?.data;
+          if (!hadithArray || hadithArray.length === 0) return;
+
+          // Pick a random hadith
+          const randomIndex = Math.floor(Math.random() * hadithArray.length);
+          const hadith = hadithArray[randomIndex];
+
+          // Populate
+          document.getElementById("hadithReference").innerText =
+            `${hadith.book?.bookName || "Unknown Book"}, #${hadith.hadithNumber}`;
+          document.getElementById("hadithNarrator").innerText = hadith.englishNarrator || "—";
+          document.getElementById("hadithEnglish").innerText = hadith.hadithEnglish || "No English text found.";
+          document.getElementById("hadithStatus").innerText = hadith.status || "—";
+          document.getElementById("hadithBookName").innerText = hadith.book?.bookName || "Unknown";
+          document.getElementById("hadithWriterName").innerText = hadith.book?.writerName || "Unknown";
+          document.getElementById("hadithUrduTooltip").innerText = hadith.hadithUrdu || "No Urdu text found.";
+          document.getElementById("hadithArabicTooltip").innerText = hadith.hadithArabic || "No Arabic text found.";
+        })
+        .catch(err => console.error("Error fetching hadith:", err));
+    });
+  </script>
+
+  <!-- ========= RANDOM AYAH SCRIPT ========= -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      getRandomAyah();
+      document.getElementById("shuffle").addEventListener("click", getRandomAyah);
+    });
+
+    async function getRandomAyah() {
+      try {
+        const randomAyahNumber = Math.floor(Math.random() * 6236) + 1;
+        const urlEn = `https://api.alquran.cloud/v1/ayah/${randomAyahNumber}/en.asad`;
+        const urlAr = `https://api.alquran.cloud/v1/ayah/${randomAyahNumber}`;
+
+        document.getElementById("arabicVerseText").innerText = "Loading Arabic...";
+        document.getElementById("verseText").innerText = "Loading English...";
+        document.getElementById("surahAndAyah").innerText = "...";
+
+        const [resAr, resEn] = await Promise.all([
+          fetch(urlAr).then(r => r.json()),
+          fetch(urlEn).then(r => r.json()),
+        ]);
+
+        const arText = resAr.data.text;
+        document.getElementById("arabicVerseText").innerText = arText;
+
+        const enText = resEn.data.text;
+        const surah = resEn.data.surah.englishName;
+        const ayahNumber = resEn.data.numberInSurah; 
+        const surahAndAyah = `${surah} : ${ayahNumber}`;
+
+        document.getElementById("verseText").innerText = enText;
+        document.getElementById("surahAndAyah").innerText = surahAndAyah;
+
+      } catch (err) {
+        console.error("Error fetching ayah:", err);
+        document.getElementById("arabicVerseText").innerText = "Could not load ayah.";
+        document.getElementById("verseText").innerText = "";
+        document.getElementById("surahAndAyah").innerText = "";
+      }
+    }
+  </script>
+
+  <!-- ========= MAIN RAMADAN LOGIC ========= -->
+  <script>
+    // NAMAZ TIMINGS FOR EACH DAY OF RAMADAN 2025
+    const prayerTimes = [
+      { day: 1,  Fajr: "05:02", Sunrise: "06:20", Dhuhr: "12:04", Asr: "15:45", Maghrib: "18:24", Ishaa: "19:25" },
+      { day: 2,  Fajr: "05:02", Sunrise: "06:19", Dhuhr: "12:04", Asr: "15:45", Maghrib: "18:24", Ishaa: "19:24" },
+      { day: 3,  Fajr: "05:01", Sunrise: "06:19", Dhuhr: "12:03", Asr: "15:45", Maghrib: "18:24", Ishaa: "19:24" },
+      { day: 4,  Fajr: "05:01", Sunrise: "06:18", Dhuhr: "12:03", Asr: "15:45", Maghrib: "18:24", Ishaa: "19:24" },
+      { day: 5,  Fajr: "05:00", Sunrise: "06:18", Dhuhr: "12:03", Asr: "15:45", Maghrib: "18:24", Ishaa: "19:24" },
+      { day: 6,  Fajr: "05:00", Sunrise: "06:17", Dhuhr: "12:03", Asr: "15:45", Maghrib: "18:25", Ishaa: "19:25" },
+      { day: 7,  Fajr: "04:59", Sunrise: "06:16", Dhuhr: "12:02", Asr: "15:45", Maghrib: "18:25", Ishaa: "19:25" },
+      { day: 8,  Fajr: "04:59", Sunrise: "06:16", Dhuhr: "12:02", Asr: "15:45", Maghrib: "18:25", Ishaa: "19:25" },
+      { day: 9,  Fajr: "04:58", Sunrise: "06:15", Dhuhr: "12:02", Asr: "15:45", Maghrib: "18:25", Ishaa: "19:25" },
+      { day: 10, Fajr: "04:58", Sunrise: "06:14", Dhuhr: "12:02", Asr: "15:45", Maghrib: "18:25", Ishaa: "19:25" },
+      { day: 11, Fajr: "04:57", Sunrise: "06:14", Dhuhr: "12:01", Asr: "15:45", Maghrib: "18:25", Ishaa: "19:25" },
+      { day: 12, Fajr: "04:57", Sunrise: "06:13", Dhuhr: "12:01", Asr: "15:45", Maghrib: "18:25", Ishaa: "19:25" },
+      { day: 13, Fajr: "04:56", Sunrise: "06:12", Dhuhr: "12:01", Asr: "15:44", Maghrib: "18:26", Ishaa: "19:26" },
+      { day: 14, Fajr: "04:56", Sunrise: "06:12", Dhuhr: "12:01", Asr: "15:44", Maghrib: "18:26", Ishaa: "19:26" },
+      { day: 15, Fajr: "04:55", Sunrise: "06:11", Dhuhr: "12:00", Asr: "15:44", Maghrib: "18:26", Ishaa: "19:26" },
+      { day: 16, Fajr: "04:55", Sunrise: "06:10", Dhuhr: "12:00", Asr: "15:44", Maghrib: "18:26", Ishaa: "19:26" },
+      { day: 17, Fajr: "04:54", Sunrise: "06:09", Dhuhr: "12:00", Asr: "15:44", Maghrib: "18:26", Ishaa: "19:26" },
+      { day: 18, Fajr: "04:53", Sunrise: "06:09", Dhuhr: "11:59", Asr: "15:44", Maghrib: "18:26", Ishaa: "19:26" },
+      { day: 19, Fajr: "04:53", Sunrise: "06:08", Dhuhr: "11:59", Asr: "15:44", Maghrib: "18:26", Ishaa: "19:26" },
+      { day: 20, Fajr: "04:52", Sunrise: "06:07", Dhuhr: "11:59", Asr: "15:44", Maghrib: "18:26", Ishaa: "19:26" },
+      { day: 21, Fajr: "04:52", Sunrise: "06:07", Dhuhr: "11:59", Asr: "15:43", Maghrib: "18:27", Ishaa: "19:27" },
+      { day: 22, Fajr: "04:51", Sunrise: "06:06", Dhuhr: "11:58", Asr: "15:43", Maghrib: "18:27", Ishaa: "19:27" },
+      { day: 23, Fajr: "04:51", Sunrise: "06:05", Dhuhr: "11:58", Asr: "15:43", Maghrib: "18:27", Ishaa: "19:27" },
+      { day: 24, Fajr: "04:50", Sunrise: "06:05", Dhuhr: "11:58", Asr: "15:43", Maghrib: "18:27", Ishaa: "19:27" },
+      { day: 25, Fajr: "04:49", Sunrise: "06:04", Dhuhr: "11:57", Asr: "15:43", Maghrib: "18:27", Ishaa: "19:27" },
+      { day: 26, Fajr: "04:49", Sunrise: "06:03", Dhuhr: "11:57", Asr: "15:43", Maghrib: "18:27", Ishaa: "19:27" },
+      { day: 27, Fajr: "04:48", Sunrise: "06:03", Dhuhr: "11:57", Asr: "15:43", Maghrib: "18:27", Ishaa: "19:27" },
+      { day: 28, Fajr: "04:48", Sunrise: "06:02", Dhuhr: "11:56", Asr: "15:42", Maghrib: "18:27", Ishaa: "19:27" },
+      { day: 29, Fajr: "04:47", Sunrise: "06:01", Dhuhr: "11:56", Asr: "15:42", Maghrib: "18:27", Ishaa: "19:27" },
+      { day: 30, Fajr: "04:46", Sunrise: "06:01", Dhuhr: "11:56", Asr: "15:42", Maghrib: "18:28", Ishaa: "19:28" },
+    ];
+
+    // FOOD RECIPES (for Additional Highlights)
+    const foodRecipes = [
+      {
+        name: "Shorba Lahm",
+        category: "Soup / Iftar Starter",
+        description: "A traditional Omani meat soup, aromatic and hearty for breaking the fast.",
+        ingredients: "Lamb/beef, tomatoes, lentils, onions, garlic, cumin, coriander, cinnamon",
+        overview: "Brown meat with spices, simmer with tomatoes and vegetables in broth; serve hot with a squeeze of lemon.",
+        source: "Times of Oman"
+      },
+      {
+        name: "Harees",
+        category: "Main Course",
+        description: "A comforting porridge-like dish made of wheat and slow-cooked meat.",
+        ingredients: "Cracked wheat, lamb/chicken, salt, ghee, spices",
+        overview: "Soak wheat, cook meat with water and spices until tender; mash together into a smooth, creamy consistency; serve with ghee.",
+        source: "Wikipedia / Traditional Omani recipes"
+      },
+      {
+        name: "Thareed",
+        category: "Main Course",
+        description: "A bread stew where thin regag bread soaks up a savory meat and vegetable broth.",
+        ingredients: "Khubz ragag, chicken/lamb, mixed vegetables, broth, spices",
+        overview: "Sauté meat and vegetables, simmer in broth, then fold torn bread until well soaked; serve immediately.",
+        source: "Joussour to Oman"
+      },
+      {
+        name: "Machboos",
+        category: "Main Course",
+        description: "A spiced rice dish that is a staple in Omani cuisine, often served with meat or seafood.",
+        ingredients: "Basmati rice, chicken/lamb, saffron, dried lime, cardamom, cinnamon",
+        overview: "Brown meat with spices, cook rice in the seasoned broth, then layer meat and rice together; garnish with raisins and nuts.",
+        source: "Wikipedia / The Flavor Vortex"
+      },
+      {
+        name: "Samboosa",
+        category: "Appetizer / Snack",
+        description: "Crispy, triangular pastries filled with spiced meat, cheese, or vegetables, perfect for Iftar.",
+        ingredients: "Dough/wrappers, minced meat or cheese, onions, garlic, mixed spices",
+        overview: "Fill pastry with a well-seasoned mixture, fold into triangles, then deep-fry until golden brown.",
+        source: "Joussour to Oman recipes (Reddit threads)"
+      },
+      {
+        name: "Kunafa",
+        category: "Dessert",
+        description: "A rich, sweet pastry layered with cheese or cream, soaked in fragrant syrup, garnished with nuts.",
+        ingredients: "Shredded phyllo (kataifi), mozzarella/ricotta, sugar, saffron, rose water, pistachios",
+        overview: "Layer buttered shredded dough with cheese, bake until golden, then pour cooled sugar syrup and garnish with nuts.",
+        source: "Times of Oman, YouTube videos"
+      },
+      {
+        name: "Luqaimat",
+        category: "Dessert",
+        description: "Deep-fried dumplings drizzled with date syrup or honey, perfect crunchy-soft texture.",
+        ingredients: "Flour, yeast, yogurt, sugar, oil, date syrup/honey, sesame seeds",
+        overview: "Mix sticky dough, let rise, form small balls and fry until golden; coat with syrup and sprinkle sesame.",
+        source: "Joussour to Oman recipes"
+      },
+      {
+        name: "Khabeesa",
+        category: "Dessert",
+        description: "A sweet semolina pudding served warm, typically garnished with nuts and coconut.",
+        ingredients: "Semolina, ghee, sugar, milk, cardamom, saffron, nuts",
+        overview: "Roast semolina in ghee, then stir in warm milk and sugar until thick; flavor with cardamom, saffron, nuts.",
+        source: "Traditional recipes (Times of Oman)"
+      },
+      {
+        name: "Madrouba",
+        category: "Main Course",
+        description: "A mashed rice porridge with a velvety texture, enriched with spices, sometimes meat or legumes.",
+        ingredients: "Rice, tomatoes, onions, garlic, turmeric, cumin, cardamom",
+        overview: "Boil rice with vegetables/spices until very soft, mash to a porridge consistency; finish with oil or ghee.",
+        source: "Vegan Physicist, Taste Atlas"
+      },
+      {
+        name: "Balaleet",
+        category: "Breakfast / Sweet Dish",
+        description: "A sweet and savory vermicelli dish served with a lightly cooked egg omelette.",
+        ingredients: "Vermicelli, sugar, cardamom, rose water, saffron, eggs, nuts",
+        overview: "Sweeten cooked vermicelli with sugar/spices; top with omelette and garnish with nuts.",
+        source: "Various Omani recipes"
+      },
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Get today's date
+      const now = new Date();
+      document.getElementById("localDateTime").innerText = now.toLocaleString();
+
+      // Show day name for 'Today' and 'Tomorrow'
+      const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      document.getElementById("todayDayName").innerText = weekdays[now.getDay()];
+
+      const tomorrowDate = new Date(now);
+      tomorrowDate.setDate(now.getDate() + 1);
+      document.getElementById("tomorrowDayName").innerText = weekdays[tomorrowDate.getDay()];
+
+      // Figure out which Ramadan day it is
+      const ramadanStart = new Date("2025-03-01T00:00:00");
+      const ramadanEnd   = new Date("2025-03-30T23:59:59");
+      const totalDays    = 30;
+      const totalMs      = ramadanEnd - ramadanStart;
+
+      let elapsed = now - ramadanStart;
+      if (elapsed < 0) elapsed = 0;
+      if (elapsed > totalMs) elapsed = totalMs;
+
+      const fraction = elapsed / totalMs;
+      let currentDay = Math.ceil(fraction * totalDays);
+      if (currentDay < 1) currentDay = 1;
+      if (currentDay > 30) currentDay = 30;
+
+      // Tells which day is 'tomorrow' for Ramadan
+      let tomorrowDay = currentDay < 30 ? currentDay + 1 : 30;
+
+      // Build the slider ticks & animate moon
+      buildRamadanTicks();
+      animateMoon(currentDay);
+
+      // ----- TODAY’S TIMINGS -----
+      const todayPT = prayerTimes.find(pt => pt.day === currentDay) || prayerTimes[0];
+      document.getElementById("todaysFajr").innerText     = todayPT.Fajr;
+      document.getElementById("todaysSunrise").innerText  = todayPT.Sunrise;
+      document.getElementById("todaysDhuhr").innerText    = todayPT.Dhuhr;
+      document.getElementById("todaysAsr").innerText      = todayPT.Asr;
+      document.getElementById("todaysMaghrib").innerText  = todayPT.Maghrib;
+      document.getElementById("todaysIshaa").innerText    = todayPT.Ishaa;
+
+      // Roza duration for today
+      const todayDuration = getTimeDifference(todayPT.Fajr, todayPT.Maghrib);
+      document.getElementById("todayRozaDuration").innerText = todayDuration;
+
+      // ----- TOMORROW’S TIMINGS -----
+      const tmrPT = prayerTimes.find(pt => pt.day === tomorrowDay) || prayerTimes[0];
+      document.getElementById("tomorrowsFajr").innerText     = tmrPT.Fajr;
+      document.getElementById("tomorrowsSunrise").innerText  = tmrPT.Sunrise;
+      document.getElementById("tomorrowsDhuhr").innerText    = tmrPT.Dhuhr;
+      document.getElementById("tomorrowsAsr").innerText      = tmrPT.Asr;
+      document.getElementById("tomorrowsMaghrib").innerText  = tmrPT.Maghrib;
+      document.getElementById("tomorrowsIshaa").innerText    = tmrPT.Ishaa;
+
+      // Sehri ends = tomorrow's Fajr - 5 minutes
+      document.getElementById("tomorrowSehriEnds").innerText = subtractMinutes(tmrPT.Fajr, 5);
+
+      // Tomorrow's Roza duration
+      const tomorrowDuration = getTimeDifference(tmrPT.Fajr, tmrPT.Maghrib);
+      document.getElementById("tomorrowRozaDuration").innerText = tomorrowDuration;
+
+      // ----- ADDITIONAL HIGHLIGHTS CARD (#6) -----
+      // Keep the existing logic that sets rozaDuration, nearestEvent, recipe, etc.
+      // We’ll just reuse the same approach:
+      const rozaDur = todayDuration; // the script originally used "today’s" Fajr->Maghrib
+      // document.getElementById("rozaDuration").innerText = rozaDur;
+
+      // Random event for “Nearest Event”
+      const eventIndex = Math.floor(Math.random() * ramadanEvents.length);
+      // document.getElementById("nearestEventName").innerText = ramadanEvents[eventIndex].name;
+
+      // Random recipe
+      const rIdx = Math.floor(Math.random() * foodRecipes.length);
+      const recipe = foodRecipes[rIdx];
+      document.getElementById("recipeName").innerText = recipe.name;
+      document.getElementById("recipeInfo").innerText =
+        `Category: ${recipe.category}\n\n` +
+        `${recipe.description}\n\n` +
+        `Key Ingredients: ${recipe.ingredients}\n\n` +
+        `Brief Overview: ${recipe.overview}\n\n` +
+        `Source: ${recipe.source}`;
+    });
+
+    // ---------- Helpers ----------
+    function getTimeDifference(startTime, endTime) {
+      const [sH, sM] = startTime.split(":").map(Number);
+      const [eH, eM] = endTime.split(":").map(Number);
+      const startMinutes = sH * 60 + sM;
+      const endMinutes   = eH * 60 + eM;
+      let diff = endMinutes - startMinutes;
+      if (diff < 0) diff += 24 * 60; // if negative, assume crossing midnight?
+
+      const hours = Math.floor(diff / 60);
+      const mins = diff % 60;
+      return `${hours}h ${mins}m`;
+    }
+
+    function subtractMinutes(hhmm, minsToSub) {
+      let [hh, mm] = hhmm.split(":").map(Number);
+      const totalMins = hh * 60 + mm - minsToSub;
+      if (totalMins < 0) {
+        // wrap around if needed
+        const wrap = 24*60 + totalMins;
+        hh = Math.floor(wrap / 60) % 24;
+        mm = wrap % 60;
+      } else {
+        hh = Math.floor(totalMins / 60) % 24;
+        mm = totalMins % 60;
+      }
+      // Reformat
+      return String(hh).padStart(2,"0") + ":" + String(mm).padStart(2,"0");
+    }
+
+    // ---------- Slider & Moon ----------
+    function buildRamadanTicks() {
+      const container = document.getElementById('ticksContainer');
+      container.innerHTML = '';
+      const ramadanStart = new Date("2025-03-01T00:00:00");
+      const totalDays = 30;
+
+      const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      for (let i = 1; i <= totalDays; i++) {
+        const tick = document.createElement('div');
+        tick.className = 'tick';
+        const label = document.createElement('div');
+        label.className = 'tick-label';
+
+        const dayDate = new Date(ramadanStart.getTime());
+        dayDate.setDate(ramadanStart.getDate() + (i - 1));
+        label.innerText = `${monthNames[dayDate.getMonth()]} ${dayDate.getDate()}`;
+
+        tick.appendChild(label);
+        container.appendChild(tick);
+      }
+    }
+
+    function animateMoon(currentDay) {
+      const moonIcon = document.getElementById('moonIcon');
+      moonIcon.style.display = 'block';
+
+      anime({
+        targets: { day: 1 },
+        day: currentDay,
+        duration: 3000,
+        easing: 'easeInOutQuad',
+        update: anim => {
+          const dayVal = Math.round(anim.animations[0].currentValue);
+          updateMoonPosition(dayVal);
+        }
+      });
+    }
+
+    function updateMoonPosition(dayVal) {
+      const container = document.getElementById('ticksContainer');
+      const moonIcon = document.getElementById('moonIcon');
+      const totalDays = 30;
+
+      const frac = (dayVal - 1) / (totalDays - 1);
+      const containerWidth = container.offsetWidth;
+      const moonWidth = moonIcon.offsetWidth;
+      const xPos = frac * (containerWidth - moonWidth);
+      moonIcon.style.left = xPos + 'px';
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+  // 1) Pick a random Good Person Quest
+  const gpIndex = Math.floor(Math.random() * goodPersonQuests.length);
+  document.getElementById("goodPersonQuest").innerText = goodPersonQuests[gpIndex];
+
+  // 2) Pick a random Know Your Ramadan item
+  const kyIndex = Math.floor(Math.random() * knowYourRamadan.length);
+  const chosen = knowYourRamadan[kyIndex];
+
+  // Display however you like — for example, combining topic + fact + reference:
+  document.getElementById("knowRamadanItem").innerText =
+    `${chosen.Topic} — ${chosen["Fascinating Fact"]} (${chosen["Quranic Reference/Source"]})`;
+});
+
+/// Function to fetch Qibla direction using Aladhan API and update the UI
+async function fetchAndUpdateQibla(lat, lng) {
+  try {
+    const apiURL = `https://api.aladhan.com/v1/qibla/${lat}/${lng}/compass`;
+    const response = await fetch(apiURL);
+    const data = await response.json();
+    // Assuming the API returns the direction as a numeric value in data.data.qibla_direction
+    const qiblaDir = data.data.qibla_direction; // e.g., 128.5
+    document.getElementById("qiblaDirection").innerText = `${qiblaDir}°`;
+    // Rotate the compass image (using a negative value to adjust for visual direction)
+    document.getElementById("qiblaCompass").style.transform = `rotate(${-qiblaDir}deg)`;
+  } catch (error) {
+    console.error("Error fetching Qibla compass data:", error);
+    document.getElementById("qiblaDirection").innerText = "Unavailable";
+  }
+}
+
+function updateQiblaCompass() {
+  // Default coordinates for Muscat, Oman
+  const defaultLat = 23.5859;
+  const defaultLng = 58.4059;
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        fetchAndUpdateQibla(lat, lng);
+      },
+      (error) => {
+        console.warn("Geolocation error or permission denied. Using default coordinates for Muscat, Oman.", error);
+        fetchAndUpdateQibla(defaultLat, defaultLng);
+      }
+    );
+  } else {
+    // Geolocation not supported; use default coordinates
+    fetchAndUpdateQibla(defaultLat, defaultLng);
+  }
+}
+
+// Call updateQiblaCompass after DOM loads
+document.addEventListener("DOMContentLoaded", () => {
+  updateQiblaCompass();
+});
+
+// Donation Tracker Logic
+let totalDonationAmount = 0;
+
+document.getElementById("addDonationBtn").addEventListener("click", function() {
+  const donationInput = document.getElementById("donationAmount");
+  const amount = parseFloat(donationInput.value);
+  if (!isNaN(amount) && amount > 0) {
+    totalDonationAmount += amount;
+    document.getElementById("totalDonations").innerText = `$${totalDonationAmount.toFixed(2)}`;
+    donationInput.value = "";
+  } else {
+    alert("Please enter a valid donation amount.");
+  }
+});
+
+document.getElementById("setReminderBtn").addEventListener("click", function() {
+  const reminderInput = document.getElementById("reminderDate");
+  const reminderValue = reminderInput.value;
+  if (reminderValue) {
+    const reminderDate = new Date(reminderValue);
+    document.getElementById("nextReminder").innerText = reminderDate.toLocaleString();
+    reminderInput.value = "";
+  } else {
+    alert("Please select a valid date and time for the reminder.");
+  }
+});
+
+
+// Function to update weather using OpenWeatherMap API
+async function updateWeather(lat, lng) {
+  const apiKey = 'Your Open Weather Key Here';
+  const weatherApiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${apiKey}&units=metric`;
+  try {
+    const response = await fetch(weatherApiUrl);
+    const data = await response.json();
+    const temp = data.main.temp;
+    const description = data.weather[0].description;
+    const iconCode = data.weather[0].icon;
+    document.getElementById("weatherTemp").innerText = `${temp.toFixed(1)}°C`;
+    document.getElementById("weatherDesc").innerText = description;
+    document.getElementById("weatherIcon").src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+  } catch (error) {
+    console.error("Error fetching weather data:", error);
+    document.getElementById("weatherTemp").innerText = "N/A";
+    document.getElementById("weatherDesc").innerText = "Unavailable";
+  }
+}
+
+function updateWeatherSection() {
+  // Default coordinates for Muscat, Oman
+  const defaultLat = 23.5859;
+  const defaultLng = 58.4059;
+  
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        updateWeather(lat, lng);
+      },
+      (error) => {
+        console.warn("Geolocation error for weather. Using Muscat as default.", error);
+        updateWeather(defaultLat, defaultLng);
+      }
+    );
+  } else {
+    updateWeather(defaultLat, defaultLng);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateWeatherSection();
+});
+
+
+document.getElementById("calculateZakat").addEventListener("click", function() {
+  // Parse input values (defaulting to 0 if not provided)
+  const income = parseFloat(document.getElementById("income").value) || 0;
+  const savings = parseFloat(document.getElementById("savings").value) || 0;
+  const expenses = parseFloat(document.getElementById("expenses").value) || 0;
+  
+  // Simple custom formula: if net wealth is positive, zakat is 2.5% of it
+  const netWealth = income + savings - expenses;
+  const zakat = netWealth > 0 ? netWealth * 0.025 : 0;
+  
+  // Update the result display with a formatted value
+  document.getElementById("zakatResult").innerText = `$${zakat.toFixed(2)}`;
+});
+
+
+  </script>
+</body>
+</html>

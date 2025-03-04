@@ -1,0 +1,57 @@
+/* main.css */
+
+/* Example custom properties for glass effect, shadows, etc. */
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.2);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --glass-shadow: rgba(31, 38, 135, 0.37);
+  }
+  
+  /* Reusable glassmorphic panel */
+  .glassmorphic-panel {
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem; /* 16px radius */
+    box-shadow: 0 8px 32px var(--glass-shadow);
+    /* optional padding / margin can be added with Tailwind utility classes, 
+       but you can define defaults here if you wish: 
+       padding: 1.5rem; */
+  }
+  
+  /* Give text on glass backgrounds a bright color for contrast */
+  .glassmorphic-panel p,
+  .glassmorphic-panel h1,
+  .glassmorphic-panel h2 {
+    color: #f8f9fa; 
+  }
+  
+  /* Simple fade-in animation */
+  @keyframes fadeInGlass {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .fade-in-glass {
+    animation: fadeInGlass 0.8s ease-in-out forwards;
+  }
+  
+  /*
+  Example class for a gradient background, e.g., behind your hero section.
+  */
+  .bg-iftar-gradient {
+    background: linear-gradient(135deg, #ffe8d6, #ffc6a8);
+  }
+  
+  /* 
+  Additional overrides or custom classes:
+  For example, if you want to ensure the backdrop blur is consistent 
+  in different browsers, or tweak shadows, you can add them here.
+  */
+  
